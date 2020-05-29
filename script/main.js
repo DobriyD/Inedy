@@ -132,7 +132,7 @@ searchForm.addEventListener('submit', event => {
     const value = searchFormInput.value.trim();
     if (value) {
         // tvShows.append(loading);
-        dbService().getSearchResult(value).then(renderCard);
+        dbService.getSearchResult(value).then(renderCard);
     }
     searchFormInput.value = '';
 });
@@ -172,19 +172,19 @@ leftMenu.addEventListener('click', (event) => {
     }
 
     if (target.closest('#top-rated')) {
-        dbService().getTopRated().then((response) => renderCard(response, target));
+        dbService.getTopRated().then((response) => renderCard(response, target));
     }
 
     if (target.closest('#popular')) {
-        dbService().getPopular().then((response) => renderCard(response, target));
+        dbService.getPopular().then((response) => renderCard(response, target));
     }
 
     if (target.closest('#week')) {
-        dbService().getWeek().then((response) => renderCard(response, target));
+        dbService.getWeek().then((response) => renderCard(response, target));
     }
 
     if (target.closest('#today')) {
-        dbService().getToday().then((response) => renderCard(response, target));
+        dbService.getToday().then((response) => renderCard(response, target));
     }
 
     if (target.closest('#search')) {
@@ -197,36 +197,35 @@ leftMenu.addEventListener('click', (event) => {
 // открытие модального окна
 
 tvShowsList.addEventListener('click', event => {
-
     event.preventDefault();
 
-   const target = event.target;
-   const card = target.closest('.tv-card');
+    const target = event.target;
+    const card = target.closest('.tv-card');
 
-   if (card) {
-       tvShows.append(loading);
+    if (card) {
+        tvShows.append(loading);
        // preloader.style.display = 'block';
 
-       dbService().getTvShow(card.id)
-           .then(response => {
-               if (response.poster_path) {
-                   tvCardImg.src = IMG_URL + response.poster_path;
-                   tvCardImg.alt = response.name;
-                   posterWrapper.style.display= '';
-                   modalContent.style.paddingLeft = '';
-               } else {
-                   posterWrapper.style.display = 'none';
-                   modalContent.style.paddingLeft = '25px';
-               }
+        dbService.getTvShow(card.id)
+            .then(response => {
+                if (response.poster) {
+                    tvCardImg.src = IMG_URL + response.poster;
+                    tvCardImg.alt = response.name;
+                    posterWrapper.style.display= '';
+                    modalContent.style.paddingLeft = '';
+                } else {
+                    posterWrapper.style.display = 'none';
+                    modalContent.style.paddingLeft = '25px';
+                }
 
-               modalTitle.textContent = response.name;
-               genersList.textContent = ``;
-               for(const item of response.genres){genersList.innerHTML += `<li>${item.name}</li>`};
-               rating.textContent = response.vote_average;
-               description.textContent = response.overview;
-               modalLink.href =  response.homepage;
+                modalTitle.textContent = response.name;
+                genresList.textContent = ``;
+                for(const item of response.genres){genresList.innerHTML += `<li>${item.name}</li>`};
+                rating.textContent = response.vote_average;
+                description.textContent = response.overview;
+                modalLink.href =  response.homepage;
 
-           })
+            })
             .then(() =>  {
                 document.body.style.overflow = 'hidden';
                 modal.classList.remove('hide');
